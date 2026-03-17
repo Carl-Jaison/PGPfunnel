@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PGP Client Funnel — Takshashila Institution</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="header-logo">
+        <span class="logo-mark">T</span>
+        <div>
+          <div class="logo-title">Takshashila Institution</div>
+          <div class="logo-sub">Post Graduate Programme</div>
+        </div>
+      </div>
+      <button class="btn-add" id="openAddModal">+ Add lead</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-title-block">
+      <h1>Client pipeline</h1>
+      <p class="page-desc">Track outreach, meetings, and progress for PGP enrolment leads.</p>
+    </div>
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div class="funnel-body" id="funnelBody"></div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add new lead</h2>
+        <button class="modal-close" id="closeModal">×</button>
+      </div>
+      <form id="leadForm" autocomplete="off">
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>Full name *</label>
+            <input type="text" id="f-name" placeholder="e.g. Priya Sharma" required />
+          </div>
+          <div class="form-row">
+            <label>Company / organisation *</label>
+            <input type="text" id="f-company" placeholder="e.g. Reliance Industries" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Title / role</label>
+          <input type="text" id="f-title" placeholder="e.g. Deputy General Manager, Strategy" />
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label>Pipeline stage</label>
+            <select id="f-stage"></select>
+          </div>
+          <div class="form-row">
+            <label>Outreach mode</label>
+            <input type="text" id="f-mode" placeholder="e.g. LinkedIn, Email, Referral" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Meeting date</label>
+          <input type="date" id="f-date" />
+        </div>
+        <div class="form-row">
+          <label>Notes</label>
+          <textarea id="f-notes" placeholder="Context, follow-up actions, key interests…" rows="3"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="cancelModal">Cancel</button>
+          <button type="submit" class="btn-save" id="saveBtn">Add lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete confirm -->
+  <div class="modal-overlay" id="deleteOverlay">
+    <div class="modal modal--sm">
+      <div class="modal-header">
+        <h2>Remove lead?</h2>
+        <button class="modal-close" id="closeDelete">×</button>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">This will permanently remove the lead from the funnel.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="cancelDelete">Cancel</button>
+        <button class="btn-danger" id="confirmDelete">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
