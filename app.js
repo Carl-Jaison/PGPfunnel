@@ -247,10 +247,11 @@ function getVisible() { return filterProg==="All"?leads:leads.filter(l=>l.progra
 function renderStats() {
   const v=getVisible();
   const s=[
-    {label:"Total leads",  val:v.length},
-    {label:"Contacted",    val:v.filter(l=>l.stage==="Contacted").length},
-    {label:"Meetings set", val:v.filter(l=>l.stage==="Meeting scheduled").length},
-    {label:"Closed won",   val:v.filter(l=>l.stage==="Closed — won").length}
+    {label:"Total leads",    val:v.length},
+    {label:"Contacted",      val:v.filter(l=>l.stage==="Contacted").length},
+    {label:"Meeting scheduled", val:v.filter(l=>l.stage==="Meeting scheduled").length},
+    {label:"Proposal sent",  val:v.filter(l=>l.stage==="Proposal sent").length},
+    {label:"Closed won",     val:v.filter(l=>l.stage==="Closed — won").length}
   ];
   document.getElementById("statsGrid").innerHTML=s.map(x=>`<div class="stat-card"><div class="stat-label">${x.label}</div><div class="stat-val">${x.val}</div></div>`).join("");
 }
