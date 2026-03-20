@@ -200,7 +200,20 @@ let filterProg = "All";
 
 /* ── Persistence ─────────────────────────────────────────────── */
 function loadLeads() {
-  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch(e){}
+  try {
+    const r = localStorage.getItem(STORAGE_KEY);
+    if (r) {
+      const parsed = JSON.parse(r);
+      return parsed.map(l => ({ programme: "PGP", ...l }));
+    }
+    const old = localStorage.getItem("pgp_funnel_leads");
+    if (old) {
+      const oldLeads = JSON.parse(old).map(l => ({ programme: "PGP", ...l }));
+      const merged = [...oldLeads, ...BGD_LEADS.filter(b => !oldLeads.find(o => o.id === b.id))];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    }
+  } catch(e){}
   return DEFAULT_LEADS.map(l => ({...l}));
 }
 function saveLeads() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); } catch(e){} }
@@ -217,6 +230,7 @@ function render() { renderFilterTabs(); renderStats(); renderFunnel(); }
 function renderFilterTabs() {
   const wrap = document.getElementById("filterTabs");
   if (!wrap) return;
+  wrap.innerHTML = "";
   ["All","PGP","Bangalore Global Dialogue"].forEach(p => {
     const ps = PROG_STYLE[p] || {};
     const active = filterProg === p;
