@@ -248,7 +248,7 @@ function renderStats() {
   const v=getVisible();
   const s=[
     {label:"Total leads",  val:v.length},
-    {label:"Active",       val:v.filter(l=>!l.stage.startsWith("Closed")).length},
+    {label:"Contacted",    val:v.filter(l=>l.stage==="Contacted").length},
     {label:"Meetings set", val:v.filter(l=>l.stage==="Meeting scheduled").length},
     {label:"Closed won",   val:v.filter(l=>l.stage==="Closed — won").length}
   ];
