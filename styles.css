@@ -353,14 +353,80 @@ main {
 
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 700px) {
-  .stats-grid { grid-template-columns: repeat(3, 1fr); }
-  .col-header { display: none; }
-  .lead-row {
-    grid-template-columns: 1fr;
-    gap: 6px;
+  /* Layout */
+  main { padding: 1rem 1rem 4rem; }
+  .header-inner { padding: 0.75rem 1rem; }
+
+  /* Title */
+  .page-title-block h1 { font-size: 24px; }
+  .page-title-block { margin-bottom: 1.25rem; }
+
+  /* Stats — 2 per row on mobile, wrap naturally */
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 1.25rem;
   }
-  .card-actions { justify-content: flex-start; }
+  .stat-val { font-size: 20px; }
+
+  /* Filter tabs — scrollable row, no wrap */
+  .filter-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+
+  /* Hide desktop column header */
+  .col-header { display: none; }
+
+  /* Lead card — stack as readable rows */
+  .lead-card { padding: 12px; }
+  .lead-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Name block — keep avatar + name side by side */
+  .avatar-name { gap: 10px; }
+
+  /* Company on its own line */
+  .lead-co { font-size: 13px; font-weight: 500; }
+
+  /* Programme badge + outreach on same line */
+  .lead-card .badge { font-size: 11px; }
+
+  /* Actions row — full width, space between */
+  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 2px;
+  }
+  .btn-icon { font-size: 12px; padding: 6px 14px; }
+
+  /* Modal — full screen on mobile */
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal {
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 1.25rem 1rem;
+  }
+  .modal--sm { max-height: 60vh; }
   .form-grid-2 { grid-template-columns: 1fr; }
+
+  /* Buttons full width in modal */
+  .modal-actions { flex-direction: column-reverse; gap: 8px; }
+  .btn-save, .btn-cancel, .btn-danger { width: 100%; text-align: center; padding: 12px; font-size: 14px; }
+
+  /* Add lead button — comfortable tap target */
+  .btn-add { font-size: 13px; padding: 9px 16px; }
+}
+
+/* Tiny screens */
+@media (max-width: 380px) {
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .logo-title { font-size: 13px; }
+  .logo-sub { display: none; }
 }
 
 /* ── Filter bar ──────────────────────────────────────────────── */
@@ -396,4 +462,9 @@ main {
   padding: 3px 10px;
   border-radius: 20px;
   white-space: nowrap;
+}
+
+/* ── Desktop-only elements (hide on mobile) ──────────────────── */
+@media (max-width: 700px) {
+  .desktop-only { display: none; }
 }
