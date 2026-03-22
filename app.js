@@ -266,6 +266,7 @@ function renderFunnel() {
     const ss = STAGE_STYLE[stage] || {bg:"#F1EFE8",color:"#444441"};
     const cards = grouped[stage].map(l => {
       const ps = PROG_STYLE[l.programme] || PROG_STYLE["PGP"];
+      const progLabel = l.programme==="Bangalore Global Dialogue"?"BGD":esc(l.programme);
       return `<div class="lead-card">
         <div class="lead-row">
           <div class="avatar-name">
@@ -273,11 +274,12 @@ function renderFunnel() {
             <div style="min-width:0"><div class="lead-name">${esc(l.name)}</div><div class="lead-role">${esc(l.title)}</div></div>
           </div>
           <div><div class="lead-co">${esc(l.company)}</div></div>
-          <div><span class="badge" style="background:${ps.bg};color:${ps.color}">${l.programme==="Bangalore Global Dialogue"?"BGD":esc(l.programme)}</span></div>
-          <div>
-            <div class="lead-mode">${esc(l.mode)||'<span style="color:var(--text-faint)">—</span>'}</div>
-            ${l.date?`<div class="lead-date">${formatDate(l.date)}</div>`:""}
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="badge" style="background:${ps.bg};color:${ps.color}">${progLabel}</span>
+            ${l.mode?`<span class="lead-mode">${esc(l.mode)}</span>`:""}
+            ${l.date?`<span class="lead-date">${formatDate(l.date)}</span>`:""}
           </div>
+          <div class="lead-mode desktop-only">${esc(l.mode)||'<span style="color:var(--text-faint)">—</span>'}</div>
           <div class="card-actions">
             <button class="btn-icon" onclick="editLead(${l.id})">Edit</button>
             <button class="btn-icon btn-icon--del" onclick="promptDelete(${l.id})">×</button>
