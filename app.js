@@ -258,7 +258,10 @@ function renderTabs() {
     var btn = document.createElement("button");
     btn.textContent = p === "Bangalore Global Dialogue" ? "BGD" : p;
     btn.onclick = function(){ filterProg = p; render(); };
-    btn.style.cssText = "font-family:var(--font-body);font-size:12px;font-weight:500;padding:6px 16px;border-radius:20px;cursor:pointer;transition:all 0.15s;border:1px solid "+(active&&ps.color?ps.color:"var(--border-md)")+";background:"+(active&&ps.bg?ps.bg:(active?"var(--surface-alt)":"transparent"))+";color:"+(active&&ps.color?ps.color:(active?"var(--text)":"var(--text-muted))"));
+    var borderCol = (active && ps.color) ? ps.color : "var(--border-md)";
+    var bgCol = (active && ps.bg) ? ps.bg : (active ? "var(--surface-alt)" : "transparent");
+    var textCol = (active && ps.color) ? ps.color : (active ? "var(--text)" : "var(--text-muted)");
+    btn.style.cssText = "font-family:var(--font-body);font-size:12px;font-weight:500;padding:6px 16px;border-radius:20px;cursor:pointer;transition:all 0.15s;border:1px solid "+borderCol+";background:"+bgCol+";color:"+textCol;
     wrap.appendChild(btn);
   });
 }
