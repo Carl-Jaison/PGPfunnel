@@ -1,25 +1,5 @@
-/* ── Firebase config ────────────────────────────────────────────
-   REPLACE the values below with your own Firebase project config.
-   Instructions: see README.md
-──────────────────────────────────────────────────────────────── */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore, collection, doc,
-  onSnapshot, addDoc, setDoc, deleteDoc, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const FIREBASE_CONFIG = {
-  apiKey:            "REPLACE_API_KEY",
-  authDomain:        "REPLACE_PROJECT_ID.firebaseapp.com",
-  projectId:         "REPLACE_PROJECT_ID",
-  storageBucket:     "REPLACE_PROJECT_ID.appspot.com",
-  messagingSenderId: "REPLACE_SENDER_ID",
-  appId:             "REPLACE_APP_ID"
-};
-
-const app = initializeApp(FIREBASE_CONFIG);
-const db  = getFirestore(app);
-const LEADS_COL = "leads";
+/* ── Storage ────────────────────────────────────────────────── */
+const STORAGE_KEY = "pgp_funnel_leads_v2";
 
 /* ── Static data ────────────────────────────────────────────── */
 const STAGES = [
@@ -146,44 +126,27 @@ const SEED_LEADS = [
 ];
 
 /* ── State ──────────────────────────────────────────────────── */
-let leads = [];
+let leads = loadLeads();
+let nextId = leads.reduce((m, l) => Math.max(m, l._id || 0), 0) + 1;
 let editId = null;
 let deleteId = null;
 let filterProg = "All";
 
-/* ── Sync indicator ─────────────────────────────────────────── */
-function setSyncStatus(state) {
-  const dot = document.getElementById("syncStatus");
-  if (!dot) return;
-  dot.className = "sync-dot sync-" + state;
-  dot.title = state === "live" ? "Live — synced" : state === "error" ? "Connection error" : "Connecting…";
+/* ── Persistence ────────────────────────────────────────────── */
+function loadLeads() {
+  try {
+    const r = localStorage.getItem(STORAGE_KEY);
+    if (r) return JSON.parse(r).map(l => ({ programme: "PGP", ...l }));
+    // First load — seed from SEED_LEADS
+    const seeded = SEED_LEADS.map((l, i) => ({ _id: i + 1, ...l }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+    return seeded;
+  } catch(e) {}
+  return SEED_LEADS.map((l, i) => ({ _id: i + 1, ...l }));
 }
 
-/* ── Seed Firestore if empty ────────────────────────────────── */
-async function seedIfEmpty() {
-  const snap = await getDocs(collection(db, LEADS_COL));
-  if (snap.empty) {
-    for (const lead of SEED_LEADS) {
-      await addDoc(collection(db, LEADS_COL), lead);
-    }
-  }
-}
-
-/* ── Real-time listener ─────────────────────────────────────── */
-function startListener() {
-  setSyncStatus("connecting");
-  onSnapshot(
-    collection(db, LEADS_COL),
-    (snap) => {
-      leads = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-      setSyncStatus("live");
-      render();
-    },
-    (err) => {
-      console.error(err);
-      setSyncStatus("error");
-    }
-  );
+function saveLeads() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); } catch(e) {}
 }
 
 /* ── Helpers ────────────────────────────────────────────────── */
@@ -372,8 +335,8 @@ function closeModal() {
   editId = null;
 }
 
-/* ── Save to Firestore ──────────────────────────────────────── */
-async function handleFormSubmit(e) {
+/* ── Save ───────────────────────────────────────────────────── */
+function handleFormSubmit(e) {
   e.preventDefault();
   const data = {
     name:      document.getElementById("f-name").value.trim(),
@@ -386,37 +349,26 @@ async function handleFormSubmit(e) {
     notes:     document.getElementById("f-notes").value.trim()
   };
   if (!data.name || !data.company) return;
-
-  const btn = document.getElementById("saveBtn");
-  btn.textContent = "Saving…";
-  btn.disabled = true;
-
-  try {
-    if (editId) {
-      await setDoc(doc(db, LEADS_COL, editId), data, { merge: true });
-    } else {
-      await addDoc(collection(db, LEADS_COL), data);
-    }
-    closeModal();
-  } catch (err) {
-    console.error(err);
-    alert("Save failed — check your connection and try again.");
-  } finally {
-    btn.textContent = editId ? "Save changes" : "Add lead";
-    btn.disabled = false;
+  if (editId !== null) {
+    const idx = leads.findIndex(l => l._id === editId);
+    if (idx > -1) leads[idx] = { ...leads[idx], ...data };
+  } else {
+    leads.push({ _id: nextId++, ...data });
   }
+  saveLeads();
+  closeModal();
+  render();
 }
 
-/* ── Delete from Firestore ──────────────────────────────────── */
+/* ── Delete ─────────────────────────────────────────────────── */
 function promptDelete(id) { deleteId = id; document.getElementById("deleteOverlay").classList.add("open"); }
 function closeDelete()    { document.getElementById("deleteOverlay").classList.remove("open"); deleteId = null; }
 
-async function confirmDelete() {
-  if (!deleteId) return;
-  try {
-    await deleteDoc(doc(db, LEADS_COL, deleteId));
-  } catch (err) {
-    alert("Delete failed — check your connection.");
+function confirmDelete() {
+  if (deleteId !== null) {
+    leads = leads.filter(l => l._id !== deleteId);
+    saveLeads();
+    render();
   }
   closeDelete();
 }
@@ -433,4 +385,4 @@ document.getElementById("confirmDelete").addEventListener("click", confirmDelete
 document.getElementById("deleteOverlay").addEventListener("click", function(e){ if(e.target===this) closeDelete(); });
 
 /* ── Boot ───────────────────────────────────────────────────── */
-seedIfEmpty().then(startListener);
+render();
