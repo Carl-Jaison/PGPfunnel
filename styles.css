@@ -87,7 +87,7 @@ header {
 main {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+  padding: 1.5rem 1.5rem 4rem;
 }
 
 .page-title-block { margin-bottom: 1.75rem; }
@@ -102,20 +102,40 @@ main {
 .page-desc { font-size: 14px; color: var(--text-muted); }
 
 /* ── Stats ───────────────────────────────────────────────────── */
+.stats-bar {
+  position: sticky;
+  top: 57px; /* sits just below the sticky header */
+  z-index: 40;
+  background: var(--bg);
+  padding: 0.6rem 1.5rem;
+  margin: 0 -1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
-  margin-bottom: 2rem;
 }
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 1rem 1.1rem;
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.stat-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(43,76,140,0.1);
+}
+.stat-card.stat-active {
+  border-color: var(--accent);
+  background: var(--accent-light);
 }
 .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-.stat-val   { font-size: 26px; font-weight: 300; color: var(--text); font-family: var(--font-display); }
+.stat-val   { font-size: 24px; font-weight: 300; color: var(--text); font-family: var(--font-display); }
+.stat-sub   { font-size: 10px; color: var(--text-faint); margin-top: 3px; }
 
 /* ── Stage sections ──────────────────────────────────────────── */
 .stage-section { margin-bottom: 1.5rem; }
@@ -361,13 +381,19 @@ main {
   .page-title-block h1 { font-size: 24px; }
   .page-title-block { margin-bottom: 1.25rem; }
 
-  /* Stats — 2 per row on mobile, wrap naturally */
+  /* Stats bar — still sticky on mobile, but tighter */
+  .stats-bar {
+    top: 52px;
+    margin: 0 -1rem 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    margin-bottom: 1.25rem;
   }
   .stat-val { font-size: 20px; }
+  .stat-card { padding: 0.6rem 0.75rem; }
 
   /* Filter tabs — scrollable row, no wrap */
   .filter-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
@@ -443,16 +469,16 @@ main {
 .stage-pill {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 17px;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 4px 12px;
+  letter-spacing: 0.01em;
+  padding: 6px 16px;
   border-radius: 20px;
 }
 .stage-count {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-faint);
-  margin-left: 2px;
+  margin-left: 4px;
 }
 
 /* ── Programme badge ─────────────────────────────────────────── */
@@ -467,4 +493,26 @@ main {
 /* ── Desktop-only elements (hide on mobile) ──────────────────── */
 @media (max-width: 700px) {
   .desktop-only { display: none; }
+}
+
+/* ── Sync status dot ─────────────────────────────────────────── */
+.sync-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  background: var(--text-faint);
+  transition: background 0.3s;
+}
+.sync-connecting { background: #F0A500; animation: pulse 1.2s infinite; }
+.sync-live       { background: #1D9E75; }
+.sync-error      { background: #C0392B; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── Loading state ───────────────────────────────────────────── */
+.loading-state {
+  font-size: 14px;
+  color: var(--text-faint);
+  padding: 2rem 0;
+  font-style: italic;
 }
