@@ -192,7 +192,7 @@ const SEED_LEADS = [
 
 /* ── State ──────────────────────────────────────────────────── */
 let leads = loadLeads();
-let nextId = leads.reduce((m, l) => Math.max(m, l._id || 0), 0) + 1;
+let nextId = leads.reduce((m, l) => Math.max(m, Number(l._id) || 0), 0) + 1;
 let editId = null;
 let deleteId = null;
 let filterProg = "All";
@@ -200,18 +200,18 @@ let filterProg = "All";
 /* ── Persistence ────────────────────────────────────────────── */
 function loadLeads() {
   try {
-    const r = localStorage.getItem(STORAGE_KEY);
-    if (r) {
-      const parsed = JSON.parse(r);
-      // Use stored data only if it's complete (has all leads including BGD)
-      if (parsed.length >= 150) return parsed;
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      /* Keep stored data only if it's the full set AND has programme field */
+      if (parsed.length >= 150 && parsed[0].programme) return parsed;
     }
-    // First visit or stale data — seed full dataset
-    const seeded = SEED_LEADS.map(l => ({ ...l }));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
-    return seeded;
   } catch(e) {}
-  return SEED_LEADS.map(l => ({ ...l }));
+  /* Seed fresh — wipe stale data */
+  localStorage.removeItem(STORAGE_KEY);
+  const seeded = SEED_LEADS.map(l => ({ ...l }));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded)); } catch(e) {}
+  return seeded;
 }
 
 function saveLeads() {
@@ -221,7 +221,7 @@ function saveLeads() {
 /* ── Helpers ────────────────────────────────────────────────── */
 function initials(n) { return (n||"").trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase(); }
 function avatarStyle(id) {
-  const hash = (id||"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+  const hash = String(id||0).split("").reduce((a,c)=>a+c.charCodeAt(0),0);
   const p = AVATAR_PALETTES[hash % AVATAR_PALETTES.length];
   return `background:${p.bg};color:${p.color}`;
 }
@@ -422,7 +422,7 @@ function handleFormSubmit(e) {
     const idx = leads.findIndex(l => l._id === editId);
     if (idx > -1) leads[idx] = { ...leads[idx], ...data };
   } else {
-    leads.push({ _id: nextId++, ...data });
+    leads.push({ _id: nextId, ...data }); nextId++;
   }
   saveLeads();
   closeModal();
