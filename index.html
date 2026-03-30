@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Client Funnel — Takshashila Institution</title>
+  <title>PGP Client Funnel — Takshashila Institution</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
@@ -18,7 +18,7 @@
         <span class="logo-mark">T</span>
         <div>
           <div class="logo-title">Takshashila Institution</div>
-          <div class="logo-sub">Client Pipeline</div>
+          <div class="logo-sub">Post Graduate Programme</div>
         </div>
       </div>
       <button class="btn-add" id="openAddModal">+ Add lead</button>
@@ -28,17 +28,12 @@
   <main>
     <div class="page-title-block">
       <h1>Client pipeline</h1>
-      <p class="page-desc">Track outreach, meetings, and progress for Bangalore Global Dialogue (BGD) and PGP enrolment leads.</p>
+      <p class="page-desc">Track outreach, meetings, and progress for PGP enrolment leads.</p>
     </div>
 
-    <div class="filter-bar">
-      <div id="filterTabs" class="filter-tabs"></div>
-    </div>
+    <div class="stats-grid" id="statsGrid"></div>
 
-    <div class="stats-bar"><div class="stats-grid" id="statsGrid"></div></div>
-
-    <div class="funnel-body" id="funnelBody">
-    </div>
+    <div class="funnel-body" id="funnelBody"></div>
   </main>
 
   <!-- Modal -->
@@ -65,23 +60,17 @@
         </div>
         <div class="form-grid-2">
           <div class="form-row">
-            <label>Programme</label>
-            <select id="f-programme"></select>
-          </div>
-          <div class="form-row">
             <label>Pipeline stage</label>
             <select id="f-stage"></select>
           </div>
-        </div>
-        <div class="form-grid-2">
           <div class="form-row">
             <label>Outreach mode</label>
             <input type="text" id="f-mode" placeholder="e.g. LinkedIn, Email, Referral" />
           </div>
-          <div class="form-row">
-            <label>Meeting date</label>
-            <input type="date" id="f-date" />
-          </div>
+        </div>
+        <div class="form-row">
+          <label>Meeting date</label>
+          <input type="date" id="f-date" />
         </div>
         <div class="form-row">
           <label>Notes</label>
